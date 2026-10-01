@@ -94,6 +94,7 @@ dialog::backdrop{background:rgba(15,20,12,.7)}
 .tl li::before{content:"";position:absolute;left:-30px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:3px solid var(--bg)}
 .tl .when{color:var(--gold-soft);font-weight:700;font-size:.92rem}
 .tl .what{font-family:"Young Serif",serif;font-size:1.25rem;margin:2px 0}
+.tl .mes{display:inline-block;margin-left:6px;padding:1px 9px 2px;border-radius:999px;background:color-mix(in srgb,var(--gold) 18%,transparent);color:var(--gold-soft);font-family:Caveat,cursive;font-weight:700;font-size:1.15rem;line-height:1.2;white-space:nowrap}
 .tl .more{color:var(--muted);margin:0}
 
 /* mimo */
@@ -124,6 +125,11 @@ body.editing .ed{display:block}
 .ed-hint{font-size:.85rem;color:var(--muted);margin:0 0 8px}
 .edbar{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;z-index:5}
 .edbar .btn{box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.music{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:5;width:46px;height:46px;border-radius:50%;border:0;padding:0;cursor:pointer;display:grid;place-items:center;background:var(--moss-d);color:var(--gold-soft);font-size:1.35rem;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:opacity .2s}
+.music.off{opacity:.55}
+.music.on{animation:latido 2.4s ease-in-out infinite}
+@keyframes latido{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion: reduce){.music.on{animation:none}}
 .toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--paper-ink);padding:10px 16px;border-radius:10px;font-size:.95rem;z-index:6}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -169,6 +175,17 @@ function normDate(s){
   return y + '-' + pad(mo) + '-' + pad(d);
 }
 function fmt(iso){ var p = iso.split('-'); return (+p[2]) + ' de ' + MESES[+p[1]-1] + ' de ' + p[0]; }
+var DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+function fmtLong(iso){ var p = iso.split('-'); return DIAS[new Date(Date.UTC(+p[0], +p[1]-1, +p[2])).getUTCDay()] + ', ' + fmt(iso); }
+function mesario(iso){
+  var p = iso.split('-').map(Number), y = p[0], m = p[1], d = p[2];
+  if (d !== 1) return null;
+  var n = (y - 2026) * 12 + (m - 9);
+  if (n <= 0) return null;
+  if (n === 1) return 'Nuestro primer mes ♥';
+  if (n % 12 === 0) return (n === 12 ? 'Nuestro primer año' : 'Nuestros ' + (n/12) + ' años') + ' ♥';
+  return 'Nuestros ' + n + ' meses ♥';
+}
 function b64(buf){ var b = new Uint8Array(buf), s = ''; for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
 function unb64(s){ var bin = atob(s), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; }
 function derive(pw){
@@ -203,11 +220,12 @@ function renderLock(){
     if (!window.crypto || !crypto.subtle){ err.textContent = 'Abrí la página desde su link (https) para poder entrar.'; return; }
     var n = normDate(input.value);
     if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Probá de nuevo.' : 'Escribí la fecha para entrar.'); return; }
+    musicPrime();
     go.disabled = true; go.textContent = 'Abriendo…';
     var raw;
     derive(n).then(function(r){ raw = r; return openWith(r); })
       .then(function(){ store('andu-key', b64(raw)); enterApp(); })
-      .catch(function(){ fail('Esa no es la fecha. Probá de nuevo.'); });
+      .catch(function(){ if (audio) audio.pause(); fail('Esa no es la fecha. Probá de nuevo.'); });
   }
   input.addEventListener('input', function(){
     var d = input.value.replace(/\D/g, '').slice(0, 8);
@@ -261,8 +279,48 @@ function showAniv(info){
   dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
   document.body.appendChild(dlg); dlg.showModal(); close.focus();
 }
+/* ---------- música (subí el archivo cancion.mp3 al repo, junto a index.html) ---------- */
+var SONG = 'cancion.mp3', audio = null;
+function musicPrime(){
+  if (audio){ if (audio.paused){ audio.muted = true; var q = audio.play(); if (q && q.catch) q.catch(function(){}); } return; }
+  audio = new Audio(SONG); audio.loop = true; audio.volume = 0.6; audio.muted = true;
+  audio.addEventListener('error', function(){ var b = document.querySelector('.music'); if (b) b.remove(); audio = null; });
+  var p = audio.play(); if (p && p.catch) p.catch(function(){});
+}
+function musicSync(){
+  var b = document.querySelector('.music'); if (!b || !audio) return;
+  var on = !audio.paused;
+  b.className = 'music ' + (on ? 'on' : 'off'); b.textContent = on ? '♫' : '♪';
+  b.setAttribute('aria-label', on ? 'Pausar canción' : 'Poner canción');
+}
+function musicStart(){
+  musicPrime(); if (!audio) return;
+  if (!document.querySelector('.music')){
+    var b = el('button', {class:'music off', text:'♪', 'aria-label':'Poner canción', onclick:function(){
+      if (!audio) return;
+      if (audio.paused){ audio.muted = false; audio.play().then(musicSync).catch(musicSync); } else { audio.pause(); musicSync(); }
+    }});
+    document.body.appendChild(b);
+  }
+  audio.muted = false; audio.currentTime = 0;
+  var p = audio.play();
+  if (p && p.then) p.then(musicSync).catch(function(){
+    musicSync();
+    var once = function(e){
+      document.removeEventListener('pointerdown', once, true);
+      if (!audio || (e.target.closest && e.target.closest('.music'))) return;
+      audio.muted = false; audio.play().then(musicSync).catch(function(){});
+    };
+    document.addEventListener('pointerdown', once, true);
+  }); else musicSync();
+}
+function musicStop(){
+  if (audio){ audio.pause(); audio = null; }
+  var b = document.querySelector('.music'); if (b) b.remove();
+}
 function enterApp(){
   renderApp();
+  musicStart();
   var info = anivInfo();
   if (info) showAniv(info);
 }
@@ -301,7 +359,7 @@ function renderApp(){
       editing = false; DATA = null; state = null; cryptoKey = null;
       clearInterval(window.__t); document.body.classList.remove('editing');
       var bar = document.querySelector('.edbar'); if (bar) bar.remove();
-      window.scrollTo(0, 0); renderLock();
+      musicStop(); window.scrollTo(0, 0); renderLock();
     }}))));
   root.appendChild(w);
   renderEditBar();
@@ -356,7 +414,7 @@ function momentsSection(){
   var s = el('section', {}, el('h2', {text:'Nuestros momentos'}), el('p', {class:'lede', text:'Las fechas que quiero acordarme siempre.'}));
   var ol = el('ol', {class:'tl'});
   state.moments.slice().sort(function(a, b){ return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).forEach(function(M){
-    ol.appendChild(el('li', {}, el('div', {class:'when', text:fmt(M.date)}), el('div', {class:'what', text:M.title}), M.text ? el('p', {class:'more', text:M.text}) : null));
+    ol.appendChild(el('li', {}, el('div', {class:'when'}, document.createTextNode(fmtLong(M.date)), mesario(M.date) ? el('span', {class:'mes', text:mesario(M.date)}) : null), el('div', {class:'what', text:M.title}), M.text ? el('p', {class:'more', text:M.text}) : null));
   });
   s.appendChild(ol);
   var ed = el('div', {class:'ed'});
