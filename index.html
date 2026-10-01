@@ -1,0 +1,458 @@
+<!doctype html>
+<!-- Para Andu. Contenido encriptado en #vault (PBKDF2-SHA256 + AES-GCM-256). -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Para Andu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style id="st">
+:root{
+  --bg:#222b1e; --bg2:#2b3626; --moss:#5b6b45; --moss-d:#3e4a31;
+  --ink:#e3e6d1; --muted:#a9b096; --paper:#d8dcc2; --paper-ink:#273022;
+  --gold:#c99d3f; --gold-soft:#e2c27a; --line:#46523c;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#e2e5d0; --bg2:#d4d9bf; --moss:#56663f; --moss-d:#3e4a31;
+    --ink:#253021; --muted:#59634b; --paper:#f0f1e4; --paper-ink:#273022;
+    --gold:#a67c22; --gold-soft:#8a6516; --line:#b5bd9c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#222b1e; --bg2:#2b3626; --moss:#5b6b45; --moss-d:#3e4a31;
+  --ink:#e3e6d1; --muted:#a9b096; --paper:#d8dcc2; --paper-ink:#273022;
+  --gold:#c99d3f; --gold-soft:#e2c27a; --line:#46523c;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 Karla,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+h1,h2{font-family:"Young Serif",Georgia,serif;font-weight:400;margin:0;line-height:1.15}
+.wrap{max-width:720px;margin:0 auto;padding:0 22px}
+
+/* lock */
+.lock{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px}
+.lock-box{width:100%;max-width:360px;text-align:center}
+.lock-box h1{font-size:2.3rem;margin:18px 0 6px}
+.lock-box p{color:var(--muted);margin:0 0 24px}
+.lock-box label{display:block;text-align:left;font-weight:500;margin-bottom:8px}
+.lock-row{display:flex;gap:8px}
+.lock-row input{flex:1;min-width:0;padding:12px 14px;border-radius:10px;border:1px solid var(--line);background:var(--bg2)}
+.btn{cursor:pointer;border:0;border-radius:10px;padding:12px 18px;background:var(--moss);color:#f1f2e6;font-weight:700}
+.btn:hover{background:var(--moss-d)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.small{padding:7px 12px;font-size:.88rem;border-radius:8px}
+.err{color:var(--gold-soft);min-height:1.6em;margin-top:12px;font-size:.95rem}
+.shake{animation:sh .35s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* hero */
+.hero{padding:88px 0 56px}
+.hero h1{font-size:clamp(3rem,11vw,5.6rem);letter-spacing:-.01em}
+.hero .since{font-size:1.2rem;max-width:30em;margin:18px 0 0;color:var(--muted)}
+.hero .since b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.hero .month{margin-top:14px;font-family:Caveat,cursive;font-size:1.6rem;color:var(--gold-soft)}
+
+section{padding:44px 0;border-top:1px solid var(--line)}
+section h2{font-size:1.9rem;margin-bottom:6px}
+section .lede{color:var(--muted);margin:0 0 26px}
+
+/* envelopes */
+.envs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px}
+.env{position:relative;cursor:pointer;border:0;padding:0;background:var(--paper);color:var(--paper-ink);border-radius:6px;aspect-ratio:1.55;overflow:hidden;text-align:left;box-shadow:0 2px 0 var(--moss-d);transition:transform .2s}
+.env:hover{transform:translateY(-3px) rotate(-1deg)}
+.env::before{content:"";position:absolute;inset:0 0 auto 0;height:56%;background:color-mix(in srgb,var(--paper) 82%,var(--moss));clip-path:polygon(0 0,100% 0,50% 100%)}
+.env .seal{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:var(--moss-d);color:var(--gold-soft);display:grid;place-items:center;font-family:"Young Serif",serif;font-size:1rem;box-shadow:inset 0 0 0 3px color-mix(in srgb,var(--moss-d) 70%,#000)}
+.env .lbl{position:absolute;left:14px;right:14px;bottom:10px;font-family:Caveat,cursive;font-size:1.3rem;line-height:1.1}
+dialog{border:0;padding:0;background:transparent;max-width:min(560px,92vw);width:100%}
+dialog::backdrop{background:rgba(15,20,12,.7)}
+.letter{background:var(--paper);color:var(--paper-ink);border-radius:8px;padding:34px 30px 26px;animation:op .4s ease-out}
+@keyframes op{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.letter h3{font-family:"Young Serif",serif;font-weight:400;font-size:1.4rem;margin:0 0 14px}
+.letter .body{font-family:Caveat,cursive;font-size:1.55rem;line-height:1.35;white-space:pre-wrap}
+.letter .close{margin-top:20px;background:var(--moss-d);color:#f1f2e6}
+
+/* wall */
+.notes{display:grid;gap:16px}
+.note{background:var(--paper);color:var(--paper-ink);padding:18px 22px;border-radius:4px;max-width:560px}
+.note:nth-child(even){margin-left:auto;transform:rotate(.6deg)}
+.note:nth-child(odd){transform:rotate(-.5deg)}
+.note .txt{font-family:Caveat,cursive;font-size:1.5rem;line-height:1.3;white-space:pre-wrap}
+.note .d{font-size:.82rem;color:#5b6650;margin-top:6px}
+
+/* timeline */
+.tl{list-style:none;margin:0;padding:0 0 0 22px;border-left:2px solid var(--moss)}
+.tl li{position:relative;padding:0 0 26px 16px}
+.tl li::before{content:"";position:absolute;left:-30px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--gold);border:3px solid var(--bg)}
+.tl .when{color:var(--gold-soft);font-weight:700;font-size:.92rem}
+.tl .what{font-family:"Young Serif",serif;font-size:1.25rem;margin:2px 0}
+.tl .more{color:var(--muted);margin:0}
+
+/* mimo */
+.mimo{display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.mimo-out{font-family:Caveat,cursive;font-size:clamp(1.8rem,6vw,2.4rem);line-height:1.2;min-height:2.6em;color:var(--gold-soft)}
+.mimo-out.pop{animation:pop .45s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+footer{padding:40px 0 60px;color:var(--muted);font-size:.9rem;border-top:1px solid var(--line)}
+
+/* aniversario */
+.aniv{max-width:min(620px,94vw)}
+.aniv .letter{text-align:center;padding:44px 30px 30px;position:relative;overflow:hidden}
+.aniv .big{font-family:"Young Serif",Georgia,serif;font-size:clamp(2.2rem,8vw,3.4rem);line-height:1.05;margin:14px 0 18px;color:var(--moss-d)}
+.aniv .body{font-family:Caveat,cursive;font-size:1.6rem;line-height:1.35;white-space:pre-wrap;max-width:26em;margin:0 auto}
+.aniv .close{margin-top:24px;background:var(--moss-d);color:#f1f2e6}
+.aniv .hrt{position:absolute;bottom:-20px;color:var(--gold);font-size:18px;opacity:0;animation:up 3.2s ease-out forwards;pointer-events:none}
+@keyframes up{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:.9}100%{opacity:0;transform:translateY(-420px) scale(1.2)}}
+.month{cursor:pointer;background:none;border:0;padding:0}
+
+/* editing */
+.ed{display:none}
+body.editing .ed{display:block}
+.ed-box{background:var(--bg2);border:1px dashed var(--line);border-radius:10px;padding:14px;margin-top:14px}
+.ed-box input,.ed-box textarea{width:100%;padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:var(--bg);margin-bottom:8px}
+.ed-box textarea{min-height:90px;resize:vertical}
+.ed-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ed-hint{font-size:.85rem;color:var(--muted);margin:0 0 8px}
+.edbar{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;z-index:5}
+.edbar .btn{box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--paper);color:var(--paper-ink);padding:10px 16px;border-radius:10px;font-size:.95rem;z-index:6}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="application/json" id="vault">{"v":1,"iter":600000,"salt":"6P7FwEWMxrS6UyzqnM0pvA==","iv":"i41rpNud6n7O1uKO","ct":"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"}</script>
+<script id="app">
+(function(){
+var VAULT = JSON.parse(document.getElementById('vault').textContent);
+var DATA = null, state = null, cryptoKey = null;
+var START = new Date('2026-09-01T00:00:00-03:00');
+var editing = false;
+var root = document.getElementById('root');
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+function el(tag, attrs){
+  var n = document.createElement(tag);
+  if (attrs) for (var k in attrs){
+    if (k === 'text') n.textContent = attrs[k];
+    else if (k === 'class') n.className = attrs[k];
+    else if (k.slice(0,2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (var i = 2; i < arguments.length; i++){ var c = arguments[i]; if (c) n.appendChild(c); }
+  return n;
+}
+function store(k, v){ try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch(e){ return null; } }
+function hash(s){ var x = 5381; for (var i = 0; i < s.length; i++) x = ((x << 5) + x + s.charCodeAt(i)) | 0; return x >>> 0; }
+function pad(n){ return (n < 10 ? '0' : '') + n; }
+function normDate(s){
+  s = s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  var m = s.match(/(\d{1,2})\D+(\d{1,2})\D+(\d{2,4})/), d, mo, y;
+  if (m){ d = +m[1]; mo = +m[2]; y = +m[3]; }
+  else {
+    m = s.match(/(\d{1,2})\s*(?:de\s+)?([a-z]+)(?:\s*(?:de|del)?\s*(\d{2,4}))?/);
+    if (!m) return '';
+    var idx = MESES.indexOf(m[2]); if (idx < 0 && m[2] === 'setiembre') idx = 8;
+    if (idx < 0) return '';
+    d = +m[1]; mo = idx + 1; y = m[3] ? +m[3] : 2026;
+  }
+  if (y < 100) y += 2000;
+  return y + '-' + pad(mo) + '-' + pad(d);
+}
+function fmt(iso){ var p = iso.split('-'); return (+p[2]) + ' de ' + MESES[+p[1]-1] + ' de ' + p[0]; }
+function b64(buf){ var b = new Uint8Array(buf), s = ''; for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+function unb64(s){ var bin = atob(s), b = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; }
+function derive(pw){
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']).then(function(k){
+    return crypto.subtle.deriveBits({name:'PBKDF2', hash:'SHA-256', salt:unb64(VAULT.salt), iterations:VAULT.iter}, k, 256);
+  });
+}
+function openWith(raw){
+  return crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt','decrypt']).then(function(k){
+    cryptoKey = k;
+    return crypto.subtle.decrypt({name:'AES-GCM', iv:unb64(VAULT.iv)}, k, unb64(VAULT.ct));
+  }).then(function(plain){
+    DATA = JSON.parse(new TextDecoder().decode(plain));
+    state = JSON.parse(JSON.stringify(DATA));
+  });
+}
+function todayIso(){ var t = new Date(); return t.getFullYear() + '-' + pad(t.getMonth()+1) + '-' + pad(t.getDate()); }
+
+/* ---------- lock ---------- */
+function renderLock(){
+  root.innerHTML = '';
+  var input = el('input', {id:'q', type:'text', inputmode:'numeric', placeholder:'dd/mm/aaaa', autocomplete:'off'});
+  var err = el('div', {class:'err', role:'status'});
+  var box = el('div', {class:'lock-box'});
+  var go = el('button', {class:'btn', text:'Entrar', onclick:tryIt});
+  function fail(msg){
+    go.disabled = false; go.textContent = 'Entrar';
+    err.textContent = msg;
+    box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+  }
+  function tryIt(){
+    if (!window.crypto || !crypto.subtle){ err.textContent = 'Abrí la página desde su link (https) para poder entrar.'; return; }
+    var n = normDate(input.value);
+    if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Pista: fue en septiembre.' : 'Escribí la fecha para entrar.'); return; }
+    go.disabled = true; go.textContent = 'Abriendo…';
+    var raw;
+    derive(n).then(function(r){ raw = r; return openWith(r); })
+      .then(function(){ store('andu-key', b64(raw)); enterApp(); })
+      .catch(function(){ fail('Esa no es la fecha. Pista: fue en septiembre.'); });
+  }
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryIt(); });
+  box.appendChild(sealSvg());
+  box.appendChild(el('h1', {text:'Para Andu'}));
+  box.appendChild(el('p', {text:'Una cosita antes de pasar.'}));
+  box.appendChild(el('label', {for:'q', text:'¿Qué día empezamos?'}));
+  box.appendChild(el('div', {class:'lock-row'}, input, go));
+  box.appendChild(err);
+  root.appendChild(el('main', {class:'lock'}, box));
+  input.focus();
+}
+function sealSvg(){
+  var d = document.createElement('div');
+  d.innerHTML = '<svg width="84" height="62" viewBox="0 0 84 62" aria-hidden="true"><rect x="2" y="2" width="80" height="58" rx="5" fill="var(--paper)"/><path d="M2 6 L42 36 L82 6" fill="none" stroke="var(--moss)" stroke-width="2.5"/><circle cx="42" cy="36" r="11" fill="var(--moss-d)"/><path d="M42 31 c-3-4-9-1-6 4 l6 6 l6-6 c3-5-3-8-6-4z" fill="var(--gold-soft)"/></svg>';
+  return d.firstChild;
+}
+
+/* ---------- app ---------- */
+function sinceText(){
+  var ms = Date.now() - START.getTime(); if (ms < 0) ms = 0;
+  var min = Math.floor(ms / 60000), days = Math.floor(min / 1440), hrs = Math.floor((min % 1440) / 60), m = min % 60;
+  function u(n, s, p){ return n + ' ' + (n === 1 ? s : p); }
+  return [u(days,'día','días'), u(hrs,'hora','horas'), u(m,'minuto','minutos')];
+}
+function anivInfo(){
+  var t = new Date(), start = new Date(2026, 8, 1);
+  var months = (t.getFullYear() - start.getFullYear()) * 12 + t.getMonth() - start.getMonth();
+  if (t.getDate() !== 1 || months <= 0) return null;
+  var y = months / 12, tiempo, title;
+  if (months % 12 === 0){ tiempo = y === 1 ? 'un año' : y + ' años'; title = y === 1 ? '¡Feliz primer año!' : '¡Feliz ' + y + '° año!'; }
+  else { tiempo = months === 1 ? 'un mes' : months + ' meses'; title = months === 1 ? '¡Feliz primer mes!' : '¡Cumplimos ' + months + ' meses!'; }
+  return {months:months, tiempo:tiempo, title:title};
+}
+function showAniv(info){
+  info = info || {tiempo:'un mes', title:'¡Feliz primer mes!'};
+  var dlg = el('dialog', {class:'aniv', 'aria-label':info.title});
+  var close = el('button', {class:'btn close', text:'Gracias 💚', onclick:function(){ dlg.close(); }});
+  var card = el('div', {class:'letter'}, sealSvg(), el('div', {class:'big', text:info.title}),
+    el('div', {class:'body', text:(state.aniv || '').replace(/\{tiempo\}/g, info.tiempo)}), close);
+  for (var i = 0; i < 16; i++){
+    var s = el('span', {class:'hrt', text:'♥'});
+    s.style.left = (4 + Math.random() * 92) + '%'; s.style.animationDelay = (Math.random() * 1.8) + 's';
+    s.style.fontSize = (12 + Math.random() * 16) + 'px'; card.appendChild(s);
+  }
+  dlg.appendChild(card);
+  dlg.addEventListener('close', function(){ dlg.remove(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+  document.body.appendChild(dlg); dlg.showModal(); close.focus();
+}
+function enterApp(){
+  renderApp();
+  var info = anivInfo();
+  if (info && store('andu-aniv') !== todayIso()){ store('andu-aniv', todayIso()); showAniv(info); }
+}
+
+function renderApp(){
+  root.innerHTML = '';
+  document.body.classList.toggle('editing', editing);
+  var w = el('div', {class:'wrap'});
+
+  // hero
+  var since = el('p', {class:'since'});
+  function tick(){
+    var p = sinceText(); since.innerHTML = '';
+    since.append('Hace ', el('b',{text:p[0]}), ', ', el('b',{text:p[1]}), ' y ', el('b',{text:p[2]}), ' que empezamos. Y cada uno de esos minutos valió la pena.');
+  }
+  tick(); clearInterval(window.__t); window.__t = setInterval(tick, 30000);
+  var hero = el('header', {class:'hero'}, el('h1', {text:'Hola, Andu.'}), since);
+  var ai = anivInfo();
+  if (ai) hero.appendChild(el('button', {class:'month', text:'¡Hoy cumplimos ' + ai.tiempo + '! Tocá acá 💚', onclick:function(){ showAniv(ai); }}));
+  var ta = el('textarea', {'aria-label':'Mensaje de aniversario'}); ta.value = state.aniv || '';
+  ta.oninput = function(){ state.aniv = ta.value; };
+  hero.appendChild(el('div', {class:'ed'}, el('div', {class:'ed-box'},
+    el('p', {class:'ed-hint', text:'Mensaje de la ventana de cada mes. {tiempo} se reemplaza por "un mes", "2 meses", "un año"…'}), ta,
+    el('button', {class:'btn ghost small', text:'Ver cómo queda', onclick:function(){ showAniv(anivInfo()); }}))));
+  w.appendChild(hero);
+
+  w.appendChild(lettersSection());
+  w.appendChild(wallSection());
+  w.appendChild(momentsSection());
+  w.appendChild(mimoSection());
+  w.appendChild(el('footer', {}, el('div', {text:state.footer || 'Hecho con amor.'}),
+    el('div', {class:'ed-row', style:'margin-top:14px'},
+    editing ? null : el('button', {class:'btn ghost small', text:'Editar', onclick:askPin}),
+    el('button', {class:'btn ghost small', text:'Cerrar sesión', onclick:function(){
+      try { localStorage.removeItem('andu-key'); localStorage.removeItem('andu-ok'); } catch(e){}
+      editing = false; DATA = null; state = null; cryptoKey = null;
+      clearInterval(window.__t); document.body.classList.remove('editing');
+      var bar = document.querySelector('.edbar'); if (bar) bar.remove();
+      window.scrollTo(0, 0); renderLock();
+    }}))));
+  root.appendChild(w);
+  renderEditBar();
+}
+
+function lettersSection(){
+  var s = el('section', {}, el('h2', {text:'Abrir cuando…'}), el('p', {class:'lede', text:'Cartas para distintos momentos. Abrí la que necesites.'}));
+  var grid = el('div', {class:'envs'});
+  state.letters.forEach(function(L, i){
+    grid.appendChild(el('button', {class:'env', 'aria-label':'Abrir cuando ' + L.title, onclick:function(){ openLetter(L); }},
+      el('span', {class:'seal', text:'A'}), el('span', {class:'lbl', text:'…' + L.title})));
+  });
+  s.appendChild(grid);
+  // editor
+  var ed = el('div', {class:'ed'});
+  state.letters.forEach(function(L, i){
+    var t = el('input', {value:L.title, 'aria-label':'Título de la carta'}); t.oninput = function(){ L.title = t.value; };
+    var b = el('textarea', {'aria-label':'Texto de la carta'}); b.value = L.body; b.oninput = function(){ L.body = b.value; };
+    ed.appendChild(el('div', {class:'ed-box'}, el('p', {class:'ed-hint', text:'Abrir cuando…'}), t, b,
+      el('div', {class:'ed-row'}, el('button', {class:'btn ghost small', text:'Borrar carta', onclick:function(){ state.letters.splice(i,1); renderApp(); }}))));
+  });
+  ed.appendChild(el('div', {class:'ed-row', style:'margin-top:12px'}, el('button', {class:'btn small', text:'Agregar carta', onclick:function(){ state.letters.push({title:'nuevo momento', body:''}); renderApp(); }})));
+  s.appendChild(ed);
+  return s;
+}
+function openLetter(L){
+  var dlg = el('dialog', {'aria-label':'Carta'});
+  var close = el('button', {class:'btn close', text:'Cerrar', onclick:function(){ dlg.close(); }});
+  dlg.appendChild(el('div', {class:'letter'}, el('h3', {text:'Abrir cuando ' + L.title}), el('div', {class:'body', text:L.body}), close));
+  dlg.addEventListener('close', function(){ dlg.remove(); });
+  dlg.addEventListener('click', function(e){ if (e.target === dlg) dlg.close(); });
+  document.body.appendChild(dlg); dlg.showModal(); close.focus();
+}
+
+function wallSection(){
+  var s = el('section', {}, el('h2', {text:'Mensajitos'}), el('p', {class:'lede', text:'Lo que se me va ocurriendo. El más nuevo, arriba.'}));
+  var list = el('div', {class:'notes'});
+  var sorted = state.notes.map(function(n, i){ return {n:n, i:i}; }).sort(function(a, b){ return b.n.date < a.n.date ? -1 : b.n.date > a.n.date ? 1 : b.i - a.i; });
+  sorted.forEach(function(o){
+    var note = el('div', {class:'note'}, el('div', {class:'txt', text:o.n.text}), el('div', {class:'d', text:fmt(o.n.date)}));
+    if (editing) note.appendChild(el('button', {class:'btn ghost small', style:'margin-top:8px', text:'Borrar', onclick:function(){ state.notes.splice(o.i,1); renderApp(); }}));
+    list.appendChild(note);
+  });
+  s.appendChild(list);
+  var ta = el('textarea', {placeholder:'Escribile algo lindo…', 'aria-label':'Nuevo mensaje'});
+  s.appendChild(el('div', {class:'ed'}, el('div', {class:'ed-box'}, ta,
+    el('button', {class:'btn small', text:'Agregar mensaje', onclick:function(){ var v = ta.value.trim(); if (!v) return; state.notes.push({date:todayIso(), text:v}); renderApp(); }}))));
+  return s;
+}
+
+function momentsSection(){
+  var s = el('section', {}, el('h2', {text:'Nuestros momentos'}), el('p', {class:'lede', text:'Las fechas que quiero acordarme siempre.'}));
+  var ol = el('ol', {class:'tl'});
+  state.moments.slice().sort(function(a, b){ return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).forEach(function(M){
+    ol.appendChild(el('li', {}, el('div', {class:'when', text:fmt(M.date)}), el('div', {class:'what', text:M.title}), M.text ? el('p', {class:'more', text:M.text}) : null));
+  });
+  s.appendChild(ol);
+  var ed = el('div', {class:'ed'});
+  state.moments.forEach(function(M, i){
+    var d = el('input', {type:'date', value:M.date, 'aria-label':'Fecha'}); d.onchange = function(){ if (d.value){ M.date = d.value; renderApp(); } };
+    var t = el('input', {value:M.title, 'aria-label':'Título'}); t.oninput = function(){ M.title = t.value; };
+    var x = el('input', {value:M.text, 'aria-label':'Descripción'}); x.oninput = function(){ M.text = x.value; };
+    ed.appendChild(el('div', {class:'ed-box'}, d, t, x, el('button', {class:'btn ghost small', text:'Borrar momento', onclick:function(){ state.moments.splice(i,1); renderApp(); }})));
+  });
+  ed.appendChild(el('div', {class:'ed-row', style:'margin-top:12px'}, el('button', {class:'btn small', text:'Agregar momento', onclick:function(){ state.moments.push({date:todayIso(), title:'Nuevo momento', text:''}); renderApp(); }})));
+  s.appendChild(ed);
+  return s;
+}
+
+function mimoSection(){
+  var out = el('div', {class:'mimo-out', 'aria-live':'polite', text:'Tocá el botón cuando necesites uno.'});
+  var last = -1;
+  var btn = el('button', {class:'btn', text:'Dame un mimo', onclick:function(){
+    var arr = state.mimos; if (!arr.length) return;
+    var i; do { i = Math.floor(Math.random() * arr.length); } while (arr.length > 1 && i === last);
+    last = i; out.textContent = arr[i]; out.classList.remove('pop'); void out.offsetWidth; out.classList.add('pop');
+  }});
+  var s = el('section', {}, el('h2', {text:'Un mimo al azar'}), el('p', {class:'lede', text:'Para cualquier momento del día.'}), el('div', {class:'mimo'}, out, btn));
+  var ta = el('textarea', {'aria-label':'Mimos, uno por línea', style:'min-height:220px'}); ta.value = state.mimos.join('\n');
+  ta.oninput = function(){ state.mimos = ta.value.split('\n').map(function(x){ return x.trim(); }).filter(Boolean); };
+  s.appendChild(el('div', {class:'ed'}, el('div', {class:'ed-box'}, el('p', {class:'ed-hint', text:'Un mimo por línea.'}), ta)));
+  return s;
+}
+
+/* ---------- editing (con PIN; guardar descarga un index.html nuevo) ---------- */
+function toast(msg){
+  var t = el('div', {class:'toast', role:'status', text:msg}); document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 3500);
+}
+function renderEditBar(){
+  var old = document.querySelector('.edbar'); if (old) old.remove();
+  if (!editing) return;
+  var bar = el('div', {class:'edbar'});
+  {
+    bar.appendChild(el('button', {class:'btn ghost', style:'background:var(--bg)', text:'Descartar', onclick:function(){ state = JSON.parse(JSON.stringify(DATA)); editing = false; renderApp(); }}));
+    bar.appendChild(el('button', {class:'btn', text:'Guardar y descargar', onclick:save}));
+  }
+  document.body.appendChild(bar);
+}
+var PIN = 2088331026;
+function askPin(){
+  var dlg = el('dialog', {'aria-label':'PIN para editar'});
+  var input = el('input', {type:'password', inputmode:'numeric', autocomplete:'off', maxlength:'8', 'aria-label':'PIN', style:'width:100%;padding:12px 14px;border-radius:10px;border:1px solid #9aa384;background:#fff;color:#273022;font-size:1.3rem;letter-spacing:.3em;text-align:center'});
+  var err = el('div', {role:'status', style:'min-height:1.5em;margin-top:8px;font-size:.92rem;color:#7a5a12'});
+  function check(){
+    if (hash(input.value.trim()) === PIN){ dlg.close(); editing = true; renderApp(); }
+    else { err.textContent = 'PIN incorrecto.'; input.value = ''; input.focus(); }
+  }
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') check(); });
+  dlg.appendChild(el('div', {class:'letter', style:'max-width:340px;margin:0 auto'},
+    el('h3', {text:'PIN para editar'}), input, err,
+    el('div', {class:'ed-row', style:'margin-top:10px'},
+      el('button', {class:'btn', text:'Entrar a editar', onclick:check}),
+      el('button', {class:'btn ghost', style:'color:#273022;border-color:#9aa384', text:'Cancelar', onclick:function(){ dlg.close(); }}))));
+  dlg.addEventListener('close', function(){ dlg.remove(); });
+  document.body.appendChild(dlg); dlg.showModal(); input.focus();
+}
+function buildPage(vault){
+  var json = JSON.stringify(vault);
+  var css = document.getElementById('st').textContent;
+  var js = document.getElementById('app').textContent;
+  var S = 'script', ST = 'style';
+  return '<!doctype html>\n<!-- Para Andu. Contenido encriptado en #vault (PBKDF2-SHA256 + AES-GCM-256). -->\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta name="robots" content="noindex, nofollow">\n<title>Para Andu</title>\n'
+    + '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+    + '<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Karla:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">\n'
+    + '<' + ST + ' id="st">' + css + '</' + ST + '>\n</head>\n<body>\n<div id="root"></div>\n'
+    + '<' + S + ' type="application/json" id="vault">' + json + '</' + S + '>\n'
+    + '<' + S + ' id="app">' + js + '</' + S + '>\n</body>\n</html>\n';
+}
+function save(){
+  var b = document.querySelector('.edbar .btn:last-child'); if (b){ b.disabled = true; b.textContent = 'Guardando…'; }
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  crypto.subtle.encrypt({name:'AES-GCM', iv:iv}, cryptoKey, new TextEncoder().encode(JSON.stringify(state))).then(function(ct){
+    var vault = {v:1, iter:VAULT.iter, salt:VAULT.salt, iv:b64(iv), ct:b64(ct)};
+    var blob = new Blob([buildPage(vault)], {type:'text/html'});
+    var a = el('a', {href:URL.createObjectURL(blob), download:'index.html'});
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+    DATA = JSON.parse(JSON.stringify(state)); editing = false; renderApp();
+    toast('Se descargó index.html. Subilo al repo reemplazando el anterior.');
+  }).catch(function(){
+    if (b){ b.disabled = false; b.textContent = 'Guardar y descargar'; }
+    toast('No se pudo generar el archivo. Probá de nuevo.');
+  });
+}
+
+(function init(){
+  var k = store('andu-key');
+  if (!k || !window.crypto || !crypto.subtle) return renderLock();
+  openWith(unb64(k)).then(enterApp).catch(function(){
+    try { localStorage.removeItem('andu-key'); } catch(e){}
+    renderLock();
+  });
+})();
+})();
+</script>
+</body>
+</html>
