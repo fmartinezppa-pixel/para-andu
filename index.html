@@ -264,7 +264,7 @@ function showAniv(info){
 function enterApp(){
   renderApp();
   var info = anivInfo();
-  if (info && store('andu-aniv') !== todayIso()){ store('andu-aniv', todayIso()); showAniv(info); }
+  if (info) showAniv(info);
 }
 
 function renderApp(){
