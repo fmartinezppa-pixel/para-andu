@@ -190,7 +190,7 @@ function todayIso(){ var t = new Date(); return t.getFullYear() + '-' + pad(t.ge
 /* ---------- lock ---------- */
 function renderLock(){
   root.innerHTML = '';
-  var input = el('input', {id:'q', type:'text', inputmode:'numeric', placeholder:'dd/mm/aaaa', autocomplete:'off'});
+  var input = el('input', {id:'q', type:'text', inputmode:'numeric', placeholder:'dd/mm/aaaa', autocomplete:'off', maxlength:'10'});
   var err = el('div', {class:'err', role:'status'});
   var box = el('div', {class:'lock-box'});
   var go = el('button', {class:'btn', text:'Entrar', onclick:tryIt});
@@ -202,13 +202,17 @@ function renderLock(){
   function tryIt(){
     if (!window.crypto || !crypto.subtle){ err.textContent = 'Abrí la página desde su link (https) para poder entrar.'; return; }
     var n = normDate(input.value);
-    if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Probá de nuevo.' : 'Escribí la fecha para entrar.'); return; }
+    if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Pista: fue en septiembre.' : 'Escribí la fecha para entrar.'); return; }
     go.disabled = true; go.textContent = 'Abriendo…';
     var raw;
     derive(n).then(function(r){ raw = r; return openWith(r); })
       .then(function(){ store('andu-key', b64(raw)); enterApp(); })
-      .catch(function(){ fail('Esa no es la fecha. Probá de nuevo.'); });
+      .catch(function(){ fail('Esa no es la fecha. Pista: fue en septiembre.'); });
   }
+  input.addEventListener('input', function(){
+    var d = input.value.replace(/\D/g, '').slice(0, 8);
+    input.value = d.length > 4 ? d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0, 2) + '/' + d.slice(2) : d;
+  });
   input.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryIt(); });
   box.appendChild(sealSvg());
   box.appendChild(el('h1', {text:'Para Andu'}));
