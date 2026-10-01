@@ -202,12 +202,12 @@ function renderLock(){
   function tryIt(){
     if (!window.crypto || !crypto.subtle){ err.textContent = 'Abrí la página desde su link (https) para poder entrar.'; return; }
     var n = normDate(input.value);
-    if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Pista: fue en septiembre.' : 'Escribí la fecha para entrar.'); return; }
+    if (!n){ fail(input.value.trim() ? 'Esa no es la fecha. Probá de nuevo.' : 'Escribí la fecha para entrar.'); return; }
     go.disabled = true; go.textContent = 'Abriendo…';
     var raw;
     derive(n).then(function(r){ raw = r; return openWith(r); })
       .then(function(){ store('andu-key', b64(raw)); enterApp(); })
-      .catch(function(){ fail('Esa no es la fecha. Pista: fue en septiembre.'); });
+      .catch(function(){ fail('Esa no es la fecha. Probá de nuevo.'); });
   }
   input.addEventListener('keydown', function(e){ if (e.key === 'Enter') tryIt(); });
   box.appendChild(sealSvg());
